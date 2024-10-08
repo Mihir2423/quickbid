@@ -7,25 +7,25 @@ import { AuctionCard } from "./_components/auction-card";
 const AuctionPage = () => {
   return (
     <ComponentWrapper>
-      <div className="mx-auto p-4 min-h-screen container">
-        <div className="flex justify-between items-center mb-6">
+      <div className="mx-auto min-h-screen container">
+        <div className="flex justify-between items-center mb-6 p-4 border-b">
           <h1 className="font-bold text-3xl text-gray-800">Auctions</h1>
           <CreateAuctionModal />
         </div>
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="place-content-center grid grid-cols-2 mb-6 w-fit">
+          <TabsList className="place-content-center grid grid-cols-2 mb-6 p-4 w-fit">
             <TabsTrigger value="all">All Auctions</TabsTrigger>
             <TabsTrigger value="my">My Auctions</TabsTrigger>
           </TabsList>
           <TabsContent value="all">
-            <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
               {allAuctions.map((auction) => (
                 <AuctionCard key={auction.id} auction={auction} />
               ))}
             </div>
           </TabsContent>
           <TabsContent value="my">
-            <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
               {myAuctions.map((auction) => (
                 <AuctionCard key={auction.id} auction={auction} />
               ))}
