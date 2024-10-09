@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Hammer, Bell, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
-
+  const session = useSession();
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   return (
@@ -74,9 +74,9 @@ export const Sidebar = () => {
           </Avatar>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm truncate">John Doe</p>
+              <p className="font-medium text-sm truncate">{session?.data?.user?.name || "N/A"}</p>
               <p className="text-muted-foreground text-xs truncate">
-                john@example.com
+                {session?.data?.user?.email || "N/A"}
               </p>
             </div>
           )}
