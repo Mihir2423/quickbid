@@ -1,100 +1,97 @@
-datasource db {
- provider = "postgresql"
- url      = env("DATABASE_URL")
+generator client {
+  provider = "prisma-client-js"
 }
 
-generator client {
- provider = "prisma-client-js"
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
- id            String     @id @default(cuid())
- name          String?
- email         String     @unique
- emailVerified DateTime?
- image         String?
- accounts      Account[]
- sessions      Session[]
- products      Products[]
- bids          Bid[]
+  id            String     @id @default(cuid())
+  name          String?
+  email         String     @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  accounts      Account[]
+  bids          Bid[]
+  products      Products[]
+  sessions      Session[]
 
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
-
- @@map("users")
+  @@map("users")
 }
 
 model Account {
- userId            String
- type              String
- provider          String
- providerAccountId String
- refresh_token     String?
- access_token      String?
- expires_at        Int?
- token_type        String?
- scope             String?
- id_token          String?
- session_state     String?
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
-
- user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
- @@id([provider, providerAccountId])
- @@map("accounts")
+  @@id([provider, providerAccountId])
+  @@map("accounts")
 }
 
 model Session {
- sessionToken String   @unique
- userId       String
- expires      DateTime
- user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
-
- @@map("sessions")
+  @@map("sessions")
 }
 
 model VerificationToken {
- identifier String
- token      String
- expires    DateTime
+  identifier String
+  token      String
+  expires    DateTime
 
- @@id([identifier, token])
- @@map("verification_tokens")
+  @@id([identifier, token])
+  @@map("verification_tokens")
 }
 
 model Products {
- id            String   @id @default(cuid())
- userId        String
- name          String
- description   String
- image         String
- currentBid    Decimal  @default(0)
- user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- startingPrice Decimal  @default(0)
- bidInterval   Decimal  @default(100)
- status        String   @default("active")
- createdAt     DateTime @default(now())
- updatedAt     DateTime @updatedAt
- bid           Bid[]
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  description   String
+  image         String
+  currentBid    Decimal  @default(0)
+  startingPrice Decimal  @default(0)
+  bidInterval   Decimal  @default(100)
+  status        String   @default("active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  timeLeft      DateTime
+  bid           Bid[]
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
- @@map("products")
+  @@map("products")
 }
 
 model Bid {
- id        String   @id @default(cuid())
- productId String
- userId    String
- amount    Decimal
- user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  productId String
+  userId    String
+  amount    Decimal
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
- @@index([productId])
- @@map("bids")
+  @@index([productId])
+  @@map("bids")
 }

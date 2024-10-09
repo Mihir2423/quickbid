@@ -1,11 +1,14 @@
 declare type Auction = {
-  id: number;
-  title: string;
+  id: string;
+  userId: string;
+  name: string;
   description: string;
-  currentBid: number;
-  startingBid: number;
-  bidInterval: number;
-  timeLeft: string;
   image: string;
-  endDate?: string
+  currentBid: Decimal;
+  startingPrice: Decimal;
+  bidInterval: Decimal;
+  status: string;
+  createdAt: Date;
+  timeLeft: Date;
+  updatedAt: Date;
 };

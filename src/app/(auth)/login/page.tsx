@@ -1,10 +1,21 @@
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col justify-center items-center gap-3 w-full h-screen">
+    <div className="relative flex flex-col justify-center items-center gap-3 w-full h-screen">
+      <nav className="top-0 left-0 fixed flex justify-between items-center p-6 w-full">
+        <Link href="/">
+          <Image src="/logo.png" alt="logo" width={40} height={40} />
+        </Link>
+        <Button className="flex justify-center items-center gap-2 w-fit transition-all duration-300 ease-in-out">
+          Contact Us <MessageSquare size={18} />
+        </Button>
+      </nav>
       <h1 className="text-gray-700">Please sign in to continue</h1>
       <form
         action={async () => {
