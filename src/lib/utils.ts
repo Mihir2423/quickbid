@@ -37,3 +37,24 @@ export const getTimeLeft = (futureDateStr: string): string => {
     return `${Math.floor(duration.asSeconds())} seconds`;
   }
 }
+
+export const getTimeAgo = (pastDateStr: string): string => {
+ if (!pastDateStr) {
+   return '';
+ }
+ const pastDate = moment(pastDateStr);
+
+ const now = moment();
+
+ const duration: Duration = moment.duration(now.diff(pastDate));
+
+ if (duration.asDays() >= 1) {
+   return `${Math.floor(duration.asDays())} days ago`;
+ } else if (duration.asHours() >= 1) {
+   return `${Math.floor(duration.asHours())} hours ago`;
+ } else if (duration.asMinutes() >= 1) {
+   return `${Math.floor(duration.asMinutes())} minutes ago`;
+ } else {
+   return `${Math.floor(duration.asSeconds())} seconds ago`;
+ }
+};

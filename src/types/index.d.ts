@@ -36,4 +36,9 @@ declare type Bid = {
   amount: Decimal;
   createdAt: Date;
   updatedAt: Date;
+  user: {
+   id: string;
+   name: string | null;
+   email: string;
+};
 };

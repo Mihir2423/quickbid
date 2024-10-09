@@ -12,7 +12,6 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
     session,
     params.id
   );
-
   return (
     <ComponentWrapper>
       <div className="p-6">
@@ -57,13 +56,14 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
             </Card>
             <BiddingForm
               productId={product?.id}
+              bids={product?.bid}
               userId={session.id}
               bidInterval={Number(product?.bidInterval)}
               currentBid={Number(product?.currentBid)}
               productUserId={product?.userId}
             />
           </div>
-          <BiddingSection />
+          <BiddingSection bids={product?.bid} />
         </div>
       </div>
     </ComponentWrapper>

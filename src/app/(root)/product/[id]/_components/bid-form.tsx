@@ -21,12 +21,14 @@ export const BiddingForm = ({
   productId,
   userId,
   productUserId,
+  bids,
 }: {
   currentBid: number;
   userId: string | undefined;
   productId: string | undefined;
   bidInterval: number;
   productUserId: string | undefined;
+  bids: Bid[] | undefined;
 }) => {
   const [customBid, setCustomBid] = useState<number | null>(null);
   const getNextBidAmount = useCallback(
@@ -51,6 +53,10 @@ export const BiddingForm = ({
   const handleBid = (amount: number) => {
     if (amount <= Number(currentBid)) {
       toast.error("Invalid Bid Amount");
+      return;
+    }
+    if (bids && Array.isArray(bids) && bids[0]?.userId === userId) {
+      toast.error("You are the highest bidder");
       return;
     }
     console.log("Placing bid for", amount);

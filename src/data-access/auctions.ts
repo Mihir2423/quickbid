@@ -32,6 +32,15 @@ export const getProductDataById = async (id: string) => {
         orderBy: {
           createdAt: "desc",
         },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              id: true,
+            },
+          },
+        },
       },
     },
   });
