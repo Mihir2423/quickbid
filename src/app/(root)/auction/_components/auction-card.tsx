@@ -23,7 +23,7 @@ export const AuctionCard = ({ auction }: { auction: Auction }) => {
             alt={auction.name}
             width={400}
             height={200}
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-center object-cover"
           />
         </CardHeader>
         <CardContent className="p-4">

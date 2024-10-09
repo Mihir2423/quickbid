@@ -12,7 +12,6 @@ export const createAuctionAction = authenticatedAction
   .input(formSchema)
   .handler(async ({ input }) => {
     const session = await auth();
-    console.log(session);
 
     if (!session || !session.user || !session.user.id) {
       throw new AuthenticationError();
@@ -24,7 +23,8 @@ export const createAuctionAction = authenticatedAction
       image: input.imageUrl,
       startingPrice: input.startingBid,
       bidInterval: input.bidInterval,
-      currentBid: input.startingBid, 
+      currentBid: input.startingBid,
+      timeLeft: input.timeLeft,
     };
     // Create auction
     await prisma.products.create({

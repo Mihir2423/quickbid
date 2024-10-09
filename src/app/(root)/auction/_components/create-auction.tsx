@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,11 +12,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useServerAction } from "zsa-react";
-
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -24,9 +30,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2, Plus } from "lucide-react";
+import { CalendarIcon, Loader2, Plus } from "lucide-react";
 import { formSchema } from "@/schema/auction-schema";
 import { createAuctionAction } from "../actions";
+import { cn } from "@/lib/utils";
 
 export const CreateAuctionModal = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,6 +44,7 @@ export const CreateAuctionModal = () => {
       startingBid: 0,
       bidInterval: 0,
       imageUrl: "",
+      timeLeft: new Date(),
     },
   });
   const { execute, isPending } = useServerAction(createAuctionAction, {
@@ -138,6 +146,47 @@ export const CreateAuctionModal = () => {
             </div>
             <FormField
               control={form.control}
+              name="timeLeft"
+              render={({ field }) => (
+                <FormItem className="flex flex-col col-span-2 w-full">
+                  <FormLabel>Time Left</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="opacity-50 ml-auto w-4 h-4" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-auto" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date()
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
@@ -154,7 +203,7 @@ export const CreateAuctionModal = () => {
               )}
             />
             <Button type="submit" disabled={isPending} className="w-full">
-              Create Auction{" "}
+              Create Auction
               {isPending && <Loader2 className="ml-2 animate-spin size-4" />}
             </Button>
           </form>

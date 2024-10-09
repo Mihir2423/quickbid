@@ -6,8 +6,8 @@ export const getAllAuctions = async (userId: string) => {
     where: {
       status: "active",
       userId: {
-       not: userId,
-     },
+        not: userId,
+      },
     },
   });
   return res;
@@ -17,6 +17,22 @@ export const getMyAuctions = async (userId: string) => {
   const res = await prisma.products.findMany({
     where: {
       userId,
+    },
+  });
+  return res;
+};
+
+export const getProductDataById = async (id: string) => {
+  const res = await prisma.products.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      bid: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
   });
   return res;
