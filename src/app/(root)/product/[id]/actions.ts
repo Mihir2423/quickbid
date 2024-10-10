@@ -40,6 +40,10 @@ export const placeBidAction = authenticatedAction
           amount: input.amount,
         },
       });
+      await prisma.products.update({
+        where: { id: input.productId },
+        data: { currentBid: input.amount },
+      })
     });
 
     revalidatePath(`/auction/${input.productId}`);
