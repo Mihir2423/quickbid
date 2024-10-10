@@ -22,6 +22,7 @@ export const BiddingForm = ({
   userId,
   productUserId,
   bids,
+  productName,
 }: {
   currentBid: number;
   userId: string | undefined;
@@ -29,6 +30,7 @@ export const BiddingForm = ({
   bidInterval: number;
   productUserId: string | undefined;
   bids: Bid[] | undefined;
+  productName: string | undefined;
 }) => {
   const [customBid, setCustomBid] = useState<number | null>(null);
   const getNextBidAmount = useCallback(
@@ -60,7 +62,7 @@ export const BiddingForm = ({
       return;
     }
     console.log("Placing bid for", amount);
-    if (!userId || !productId || !currentBid || !productUserId) {
+    if (!userId || !productId || !currentBid || !productUserId || !productName) {
       toast.error("All Fields are required");
       return;
     }
@@ -70,6 +72,7 @@ export const BiddingForm = ({
       userId,
       amount,
       productUserId,
+      productName
     });
     setCustomBid(0);
   };

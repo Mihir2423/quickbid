@@ -6,6 +6,9 @@ import { authenticatedAction } from "@/lib/safe-action";
 import { AuthenticationError } from "@/lib/utils";
 import { formSchema } from "@/schema/bid-schema";
 import { revalidatePath } from "next/cache";
+import { Knock } from "@knocklabs/node";
+
+const knock = new Knock(process.env.KNOCK_SECRET_KEY);
 
 export const placeBidAction = authenticatedAction
   .createServerAction()
@@ -41,5 +44,50 @@ export const placeBidAction = authenticatedAction
         data: { currentBid: input.amount },
       });
     });
+
     revalidatePath(`/auction/${input.productId}`);
+    
+    // Send a notification to all the users who have bid on this product
+    const users = await prisma.bid.findMany({
+      where: { productId: input.productId },
+      select: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    const bidders = users.map((user) => {
+      return {
+        id: user.user.id,
+        email: user.user.email ?? "anonymous@email.com",
+        name: user.user.name ?? "Anonymous",
+      };
+    });
+
+    const recipients = bidders.filter((user) => user.id !== input.userId);
+    // filter out user with duplicate ids
+    const uniqueRecipients = recipients.filter(
+      (user, index, self) => index === self.findIndex((t) => t.id === user.id)
+    );
+
+    if (recipients.length > 0) {
+      await knock.workflows.trigger("user-placed-bid", {
+        actor: {
+          id: session.user.id,
+          name: session.user.name ?? "Anonymous",
+          email: session.user.email ?? "anonymouse@gmail.com",
+        },
+        recipients: uniqueRecipients,
+        data: {
+          productId: input.productId,
+          bidAmount: input.amount,
+          productName: input.productName,
+        },
+      });
+    }
   });
