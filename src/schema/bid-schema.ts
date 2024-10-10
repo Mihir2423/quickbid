@@ -6,6 +6,7 @@ export const formSchema = z.object({
   currentBid: z.number().positive("Current bid amount is required"),
   userId: z.string().min(1, "User ID is required"),
   amount: z.number().positive("Bid amount must be a positive number"),
+  productName: z.string().min(1, "Product Name is required"),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;

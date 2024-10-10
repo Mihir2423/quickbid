@@ -8,8 +8,8 @@ export const BiddingSection = async ({ bids }: { bids: Bid[] | undefined }) => {
   const session = await assertAuthenticated();
   const isCurrentUser = (userId: string) => userId === session.id;
   return (
-    <Card className="h-full">
-      <CardHeader>
+    <Card className="relative h-full max-h-[855px] overflow-y-scroll">
+      <CardHeader className="top-0 left-0 sticky bg-gray-200 mb-2 w-full">
         <CardTitle>Bid History</CardTitle>
       </CardHeader>
       <CardContent>

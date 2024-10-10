@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Hammer, Bell, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { ChevronLeft, ChevronRight, Hammer, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -49,17 +49,6 @@ export const Sidebar = () => {
             >
               <Hammer size={20} />
               {!isCollapsed && <span>Auction</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/notifications"
-              className={`flex items-center p-2 rounded-lg hover:bg-accent ${
-                isCollapsed ? "justify-center" : "space-x-3"
-              }`}
-            >
-              <Bell size={20} />
-              {!isCollapsed && <span>Notifications</span>}
             </Link>
           </li>
         </ul>
