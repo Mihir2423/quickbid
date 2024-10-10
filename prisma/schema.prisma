@@ -72,7 +72,7 @@ model Products {
   currentBid    Decimal  @default(0)
   startingPrice Decimal  @default(0)
   bidInterval   Decimal  @default(100)
-  status        String   @default("active")
+  status        String   @default("active") // active, sold, expired, closed
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   timeLeft      DateTime

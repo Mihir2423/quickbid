@@ -4,9 +4,11 @@ import { auth } from "@/auth";
 import prisma from "@/lib/db";
 import { authenticatedAction } from "@/lib/safe-action";
 import { AuthenticationError } from "@/lib/utils";
+import { z } from "zod";
 import { formSchema } from "@/schema/bid-schema";
 import { revalidatePath } from "next/cache";
 import { Knock } from "@knocklabs/node";
+import { redirect } from "next/navigation";
 
 const knock = new Knock(process.env.KNOCK_SECRET_KEY);
 
@@ -38,15 +40,10 @@ export const placeBidAction = authenticatedAction
           amount: input.amount,
         },
       });
-
-      await prisma.products.update({
-        where: { id: input.productId },
-        data: { currentBid: input.amount },
-      });
     });
 
     revalidatePath(`/auction/${input.productId}`);
-    
+
     // Send a notification to all the users who have bid on this product
     const users = await prisma.bid.findMany({
       where: { productId: input.productId },
@@ -90,4 +87,44 @@ export const placeBidAction = authenticatedAction
         },
       });
     }
+  });
+
+export const closeAuctionAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      id: z.string(),
+      userId: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const session = await auth();
+    if (!session || !session.user || session.user.id !== input.userId) {
+      throw new AuthenticationError();
+    }
+    await prisma.products.update({
+      where: { id: input.id },
+      data: { status: "closed" },
+    });
+    revalidatePath(`/auction/${input.id}`);
+  });
+
+export const deleteAuctionAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      id: z.string(),
+      userId: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const session = await auth();
+    if (!session || !session.user || session.user.id !== input.userId) {
+      throw new AuthenticationError();
+    }
+    await prisma.products.delete({
+      where: { id: input.id },
+    });
+    revalidatePath(`/auction/${input.id}`);
+    redirect("/auction");
   });

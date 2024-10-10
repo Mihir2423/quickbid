@@ -1,14 +1,16 @@
 import { ComponentWrapper } from "@/components/component-wrapper";
+import { BreadCrumb } from "@/components/globals/breadcrumb";
+import { PageHeader } from "@/components/globals/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { assertAuthenticated } from "@/lib/session";
+import { getTimeLeft } from "@/lib/utils";
+import { getProductDetailUseCase } from "@/use-cases/auctions";
+import { Clock } from "lucide-react";
 import Image from "next/image";
 import { BiddingForm } from "./_components/bid-form";
 import { BiddingSection } from "./_components/bidding";
-import { BreadCrumb } from "@/components/globals/breadcrumb";
-import { assertAuthenticated } from "@/lib/session";
-import { getProductDetailUseCase } from "@/use-cases/auctions";
-import { PageHeader } from "@/components/globals/page-header";
-import { getTimeLeft } from "@/lib/utils";
-import { Clock } from "lucide-react";
+import { CloseAuction } from "./_components/close";
+import { DeleteAuction } from "./_components/delete";
 const BiddingPage = async ({ params }: { params: { id: string } }) => {
   const session = await assertAuthenticated();
   const product: Product | null = await getProductDetailUseCase(
@@ -76,6 +78,14 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                 productUserId={product?.userId}
                 productName={product?.name}
               />
+            )}
+            {product?.userId === session.id && (
+              <div className="flex items-center gap-4">
+                {product?.status === "active" && (
+                  <CloseAuction productId={product?.id} productUserId={product?.userId} />
+                )}
+                <DeleteAuction productId={product?.id} productUserId={product?.userId} />
+              </div>
             )}
           </div>
           <BiddingSection bids={product?.bid} />
