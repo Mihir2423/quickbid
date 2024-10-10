@@ -7,6 +7,8 @@ import { BreadCrumb } from "@/components/globals/breadcrumb";
 import { assertAuthenticated } from "@/lib/session";
 import { getProductDetailUseCase } from "@/use-cases/auctions";
 import { PageHeader } from "@/components/globals/page-header";
+import { getTimeLeft } from "@/lib/utils";
+import { Clock } from "lucide-react";
 const BiddingPage = async ({ params }: { params: { id: string } }) => {
   const session = await assertAuthenticated();
   const product: Product | null = await getProductDetailUseCase(
@@ -15,8 +17,7 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
   );
   return (
     <ComponentWrapper>
-      <PageHeader title="Auctions">
-      </PageHeader>
+      <PageHeader title="Auctions"></PageHeader>
       <div className="pl-4">
         <BreadCrumb
           links={[{ name: "Auctions", path: "/auction" }]}
@@ -44,7 +45,8 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                 <div className="gap-4 grid grid-cols-2 text-sm">
                   <div>
                     <strong>Current Bid:</strong> $
-                    {product?.bid[0]?.amount.toString() || product?.startingPrice}
+                    {product?.bid[0]?.amount.toString() ||
+                      product?.startingPrice}
                   </div>
                   <div>
                     <strong>Starting Bid:</strong> $
@@ -54,18 +56,27 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                     <strong>Bid Interval:</strong> $
                     {product?.bidInterval.toString()}
                   </div>
+                  <div className="flex items-center">
+                    <strong>Time Left:</strong>{" "}
+                    <span>
+                      <Clock className="mr-1 ml-2 w-[14px] h-[14px]" />
+                    </span>
+                    {getTimeLeft(`${product?.timeLeft}`)}
+                  </div>
                 </div>
               </CardContent>
             </Card>
-            <BiddingForm
-              productId={product?.id}
-              bids={product?.bid}
-              userId={session.id}
-              bidInterval={Number(product?.bidInterval)}
-              currentBid={Number(product?.currentBid)}
-              productUserId={product?.userId}
-              productName={product?.name}
-            />
+            {product?.userId !== session.id && (
+              <BiddingForm
+                productId={product?.id}
+                bids={product?.bid}
+                userId={session.id}
+                bidInterval={Number(product?.bidInterval)}
+                currentBid={Number(product?.currentBid)}
+                productUserId={product?.userId}
+                productName={product?.name}
+              />
+            )}
           </div>
           <BiddingSection bids={product?.bid} />
         </div>

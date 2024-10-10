@@ -53,7 +53,7 @@ export const CreateAuctionModal = () => {
       toast.message("Something went wrong");
     },
     onSuccess() {
-      toast.success("Request sent successfully");
+      toast.success("Auction created successfully");
       form.reset();
     },
   });
