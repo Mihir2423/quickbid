@@ -3,7 +3,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { ChevronLeft, ChevronRight, Hammer, LogOut } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Hammer,
+  LayoutDashboard,
+  LogOut,
+} from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,6 +48,17 @@ export const Sidebar = () => {
         <ul className="space-y-2 p-2">
           <li>
             <Link
+              href="/dashboard"
+              className={`flex items-center p-2 rounded-lg hover:bg-accent ${
+                isCollapsed ? "justify-center" : "space-x-3"
+              }`}
+            >
+              <LayoutDashboard size={20} />
+              {!isCollapsed && <span>Dashboard</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/auction"
               className={`flex items-center p-2 rounded-lg hover:bg-accent ${
                 isCollapsed ? "justify-center" : "space-x-3"
@@ -58,12 +75,14 @@ export const Sidebar = () => {
           className={`flex items-center ${isCollapsed ? "justify-center" : "space-x-3"}`}
         >
           <Avatar>
-            <AvatarImage src="/avatar.png" alt="User" />
+            <AvatarImage src={session?.data?.user?.image ?? "/avatar.png"} alt="User" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm truncate">{session?.data?.user?.name || "N/A"}</p>
+              <p className="font-medium text-sm truncate">
+                {session?.data?.user?.name || "N/A"}
+              </p>
               <p className="text-muted-foreground text-xs truncate">
                 {session?.data?.user?.email || "N/A"}
               </p>

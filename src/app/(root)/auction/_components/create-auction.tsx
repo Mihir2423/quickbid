@@ -61,7 +61,6 @@ export const CreateAuctionModal = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Handle form submission
     execute(values);
-    console.log(values);
   }
   return (
     <Dialog>

@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const AuctionCard = ({ auction }: { auction: Auction }) => {
- console.log(auction);
+ console.log(auction.timeLeft);
  
   return (
     <Card className="flex flex-col justify-between h-full overflow-hidden">

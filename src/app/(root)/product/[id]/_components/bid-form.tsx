@@ -61,7 +61,6 @@ export const BiddingForm = ({
       toast.error("You are the highest bidder");
       return;
     }
-    console.log("Placing bid for", amount);
     if (!userId || !productId || !currentBid || !productUserId || !productName) {
       toast.error("All Fields are required");
       return;
