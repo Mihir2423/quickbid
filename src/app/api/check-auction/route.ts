@@ -2,8 +2,7 @@
 import { checkExpiredAuctions } from "@/data-access/check-auction";
 import { NextRequest, NextResponse } from "next/server";
 
-// vercel sends "post" req for cron job
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     console.log("Cron job started, date: ", new Date().toISOString());
     const authHeader = req.headers.get("authorization");
