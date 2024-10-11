@@ -11,6 +11,7 @@ import { BiddingForm } from "./_components/bid-form";
 import { BiddingSection } from "./_components/bidding";
 import { CloseAuction } from "./_components/close";
 import { DeleteAuction } from "./_components/delete";
+import { CurrentBid } from "./_components/current-bid";
 const BiddingPage = async ({ params }: { params: { id: string } }) => {
   const session = await assertAuthenticated();
   const product: Product | null = await getProductDetailUseCase(
@@ -45,11 +46,12 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                   {product?.description || "No description available"}
                 </p>
                 <div className="gap-4 grid grid-cols-2 text-sm">
-                  <div>
-                    <strong>Current Bid:</strong> $
-                    {product?.bid[0]?.amount.toString() ||
-                      product?.startingPrice}
-                  </div>
+                  <CurrentBid
+                    bidAmount={
+                      product?.bid[0]?.amount.toString() ||
+                      product?.startingPrice
+                    }
+                  />
                   <div>
                     <strong>Starting Bid:</strong> $
                     {product?.startingPrice.toString()}
@@ -82,9 +84,15 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
             {product?.userId === session.id && (
               <div className="flex items-center gap-4">
                 {product?.status === "active" && (
-                  <CloseAuction productId={product?.id} productUserId={product?.userId} />
+                  <CloseAuction
+                    productId={product?.id}
+                    productUserId={product?.userId}
+                  />
                 )}
-                <DeleteAuction productId={product?.id} productUserId={product?.userId} />
+                <DeleteAuction
+                  productId={product?.id}
+                  productUserId={product?.userId}
+                />
               </div>
             )}
           </div>

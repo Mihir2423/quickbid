@@ -14,6 +14,17 @@ import { toast } from "sonner";
 import { useServerAction } from "zsa-react";
 import { placeBidAction } from "../actions";
 import { Loader2 } from "lucide-react";
+import { useStore } from "@/store";
+
+type Props = {
+  currentBid: number;
+  userId: string | undefined;
+  productId: string | undefined;
+  bidInterval: number;
+  productUserId: string | undefined;
+  bids: Bid[] | undefined;
+  productName: string | undefined;
+};
 
 export const BiddingForm = ({
   currentBid,
@@ -23,22 +34,15 @@ export const BiddingForm = ({
   productUserId,
   bids,
   productName,
-}: {
-  currentBid: number;
-  userId: string | undefined;
-  productId: string | undefined;
-  bidInterval: number;
-  productUserId: string | undefined;
-  bids: Bid[] | undefined;
-  productName: string | undefined;
-}) => {
+}: Props) => {
   const [customBid, setCustomBid] = useState<number | null>(null);
+  const { currentBid: realBid } = useStore();
   const getNextBidAmount = useCallback(
     (increment: number) => {
-      const highestBid = Number(currentBid);
+      const highestBid = Number(realBid || currentBid);
       return highestBid + increment;
     },
-    [currentBid]
+    [currentBid, realBid]
   );
 
   const { execute, isPending } = useServerAction(placeBidAction, {
@@ -61,7 +65,13 @@ export const BiddingForm = ({
       toast.error("You are the highest bidder");
       return;
     }
-    if (!userId || !productId || !currentBid || !productUserId || !productName) {
+    if (
+      !userId ||
+      !productId ||
+      !currentBid ||
+      !productUserId ||
+      !productName
+    ) {
       toast.error("All Fields are required");
       return;
     }
@@ -71,7 +81,7 @@ export const BiddingForm = ({
       userId,
       amount,
       productUserId,
-      productName
+      productName,
     });
     setCustomBid(0);
   };
