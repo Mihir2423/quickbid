@@ -74,17 +74,19 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                 </div>
               </CardContent>
             </Card>
-            {product?.userId !== session.id && product?.status === "active" && (
-              <BiddingForm
-                productId={product?.id}
-                bids={product?.bid}
-                userId={session.id}
-                bidInterval={Number(product?.bidInterval)}
-                currentBid={Number(product?.currentBid)}
-                productUserId={product?.userId}
-                productName={product?.name}
-              />
-            )}
+            {product?.userId !== session.id &&
+              product?.status === "active" &&
+              getTimeLeft(`${product?.timeLeft}`) !== "Ended" && (
+                <BiddingForm
+                  productId={product?.id}
+                  bids={product?.bid}
+                  userId={session.id}
+                  bidInterval={Number(product?.bidInterval)}
+                  currentBid={Number(product?.currentBid)}
+                  productUserId={product?.userId}
+                  productName={product?.name}
+                />
+              )}
             {product?.status !== "active" &&
               (product?.bidWinnerId !== null ||
                 product?.bidWinnerId !== "") && (

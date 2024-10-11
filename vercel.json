@@ -1,0 +1,8 @@
+{
+ "crons": [
+   {
+     "path": "/api/check-auction",
+     "schedule": "0 0 * * *"
+   }
+ ]
+}
