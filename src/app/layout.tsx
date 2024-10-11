@@ -7,8 +7,18 @@ import Provider from "./_provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_URL || "https://quickbid.vercel.app"
+  ),
   title: "QuickBid 💵 | Real-time bidding platform",
   description: "Bidding Platform",
+  openGraph: {
+    type: "website",
+    locale: "en_IE",
+    url: `${process.env.NEXT_PUBLIC_URL}/opengraph-image.png`,
+    images: "/opengraph-image.png",
+    siteName: "QuickBid",
+  },
 };
 
 export default function RootLayout({
