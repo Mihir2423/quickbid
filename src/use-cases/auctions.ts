@@ -23,5 +23,7 @@ export const getProductDetailUseCase = async (session: User, id: string) => {
     return null;
   }
   const res = await getProductDataById(id);
+  console.log(res);
+  
   return res;
 };

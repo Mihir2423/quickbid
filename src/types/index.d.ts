@@ -26,6 +26,12 @@ declare type Product = {
   createdAt: Date;
   updatedAt: Date;
   timeLeft: Date;
+  bidWinnerId?: string | null;
+  bidWinner?: {
+    id: string;
+    name: string | null;
+    email?: string | null | undefined;
+  } | null;
   bid: Bid[];
 };
 
@@ -37,8 +43,8 @@ declare type Bid = {
   createdAt: Date;
   updatedAt: Date;
   user: {
-   id: string;
-   name: string | null;
-   email: string;
-};
+    id: string;
+    name: string | null;
+    email: string;
+  };
 };

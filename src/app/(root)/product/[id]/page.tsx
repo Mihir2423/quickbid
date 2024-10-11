@@ -12,12 +12,14 @@ import { BiddingSection } from "./_components/bidding";
 import { CloseAuction } from "./_components/close";
 import { DeleteAuction } from "./_components/delete";
 import { CurrentBid } from "./_components/current-bid";
+import { WinnerCard } from "./_components/auction-winner";
 const BiddingPage = async ({ params }: { params: { id: string } }) => {
   const session = await assertAuthenticated();
   const product: Product | null = await getProductDetailUseCase(
     session,
     params.id
   );
+  console.log(product?.bidWinner, "PRODUCTS");
   return (
     <ComponentWrapper>
       <PageHeader title="Auctions"></PageHeader>
@@ -70,7 +72,7 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                 </div>
               </CardContent>
             </Card>
-            {product?.userId !== session.id && (
+            {product?.userId !== session.id && product?.status === "active" && (
               <BiddingForm
                 productId={product?.id}
                 bids={product?.bid}
@@ -81,6 +83,9 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                 productName={product?.name}
               />
             )}
+            {product?.status !== "active" &&
+              (product?.bidWinnerId !== null ||
+                product?.bidWinnerId !== "") && <WinnerCard winnerName={product?.bidWinner?.name ?? ""} winnerEmail={product?.bidWinner?.email ?? ""} />}
             {product?.userId === session.id && (
               <div className="flex items-center gap-4">
                 {product?.status === "active" && (

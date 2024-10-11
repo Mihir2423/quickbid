@@ -42,6 +42,13 @@ export const getProductDataById = async (id: string) => {
           },
         },
       },
+      bidWinner: {
+        select: {
+          name: true,
+          email: true,
+          id: true,
+        },
+      },
     },
   });
   return res;

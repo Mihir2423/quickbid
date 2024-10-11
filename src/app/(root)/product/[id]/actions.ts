@@ -32,6 +32,21 @@ export const placeBidAction = authenticatedAction
         "Bid amount must be greater than the current highest bid."
       );
     }
+    // check if the product exists
+    const productExists = await prisma.products.findUnique({
+      where: { id: input.productId },
+    });
+    if (!productExists) {
+     throw new Error("Product not found.");
+    }
+    // check if the auction is closed
+    const product = await prisma.products.findUnique({
+      where: { id: input.productId },
+      select: { status: true },
+    });
+    if (product?.status === "closed") {
+      throw new Error("The auction is closed.");
+    }
     await prisma.$transaction(async (prisma) => {
       await prisma.bid.create({
         data: {
@@ -106,9 +121,14 @@ export const closeAuctionAction = authenticatedAction
     if (!session || !session.user || session.user.id !== input.userId) {
       throw new AuthenticationError();
     }
+    const highestBidder = await prisma.bid.findFirst({
+      where: { productId: input.id },
+      orderBy: { amount: "desc" },
+      select: { userId: true },
+    });
     await prisma.products.update({
       where: { id: input.id },
-      data: { status: "closed" },
+      data: { status: "closed", bidWinnerId: highestBidder?.userId ?? null },
     });
     revalidatePath(`/auction/${input.id}`);
   });

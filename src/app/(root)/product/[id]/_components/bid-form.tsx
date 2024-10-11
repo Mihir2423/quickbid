@@ -48,7 +48,7 @@ export const BiddingForm = ({
   const { execute, isPending } = useServerAction(placeBidAction, {
     onError({ err }) {
       console.log(err);
-      toast.message("Something went wrong");
+      toast.message(err.message ?? "Something went wrong");
     },
     onSuccess() {
       toast.success("Bid Created successfully");
