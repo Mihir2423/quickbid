@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useServerAction } from "zsa-react";
 import { placeBidAction } from "../actions";
 import { Loader2 } from "lucide-react";
+import { useStore } from "@/store";
 
 type Props = {
   currentBid: number;
@@ -35,12 +36,13 @@ export const BiddingForm = ({
   productName,
 }: Props) => {
   const [customBid, setCustomBid] = useState<number | null>(null);
+  const { currentBid: realBid } = useStore();
   const getNextBidAmount = useCallback(
     (increment: number) => {
-      const highestBid = Number(currentBid);
+      const highestBid = Number(realBid || currentBid);
       return highestBid + increment;
     },
-    [currentBid]
+    [currentBid, realBid]
   );
 
   const { execute, isPending } = useServerAction(placeBidAction, {
