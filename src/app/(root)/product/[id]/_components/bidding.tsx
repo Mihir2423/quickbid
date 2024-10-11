@@ -3,17 +3,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
 import { getTimeAgo } from "@/lib/utils";
+import { useStore } from "@/store";
 import { Clock, DollarSign } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-
 export const BiddingSection = ({ bids }: { bids: Bid[] | undefined }) => {
   const session = useSession();
+  const { setCurrentBid } = useStore();
   const isCurrentUser = (userId: string) => userId === session.data?.user?.id;
   const [allBids, setAllBids] = useState<Bid[] | undefined>(bids);
-
   useEffect(() => {
     const channel = supabase
       .channel("realtime-bids")
@@ -25,7 +25,6 @@ export const BiddingSection = ({ bids }: { bids: Bid[] | undefined }) => {
           table: "bids",
         },
         async (payload) => {
-          console.log("New bid:", payload);
           if (payload.new) {
             // Fetch the user information for the new bid
             const { data: userData, error } = await supabase
@@ -41,7 +40,7 @@ export const BiddingSection = ({ bids }: { bids: Bid[] | undefined }) => {
                 productId: payload.new.productId,
                 userId: payload.new.userId,
                 amount: payload.new.amount,
-                createdAt: payload.new.createdAt,
+                createdAt: new Date(payload.commit_timestamp),
                 updatedAt: payload.new.updatedAt,
                 user: {
                   id: userData.id,
@@ -49,6 +48,7 @@ export const BiddingSection = ({ bids }: { bids: Bid[] | undefined }) => {
                   email: userData.email,
                 },
               };
+              setCurrentBid(newBid.amount.toString());
               setAllBids((prevBids) => [newBid, ...(prevBids || [])]);
             }
           }
@@ -59,10 +59,11 @@ export const BiddingSection = ({ bids }: { bids: Bid[] | undefined }) => {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Card className="relative h-full max-h-[855px] overflow-y-scroll">
+    <Card className="relative h-full max-h-[835px] overflow-y-scroll">
       <CardHeader className="top-0 left-0 sticky bg-gray-200 mb-2 w-full">
         <CardTitle>Bid History</CardTitle>
       </CardHeader>
