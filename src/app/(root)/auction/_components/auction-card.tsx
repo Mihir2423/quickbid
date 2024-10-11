@@ -12,7 +12,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const AuctionCard = ({ auction }: { auction: Auction }) => {
- 
   return (
     <Card className="flex flex-col justify-between h-full overflow-hidden">
       <div>
@@ -37,7 +36,11 @@ export const AuctionCard = ({ auction }: { auction: Auction }) => {
             </div>
             <div className="flex items-center">
               <Clock className="mr-1 w-4 h-4" />
-              <span>{getTimeLeft(`${auction.timeLeft}`)}</span>
+              <span>
+                {auction?.status !== "active"
+                  ? "Ended"
+                  : getTimeLeft(`${auction.timeLeft}`)}
+              </span>
             </div>
           </div>
         </CardContent>

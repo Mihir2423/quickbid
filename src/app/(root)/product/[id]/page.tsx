@@ -67,7 +67,9 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                     <span>
                       <Clock className="mr-1 ml-2 w-[14px] h-[14px]" />
                     </span>
-                    {getTimeLeft(`${product?.timeLeft}`)}
+                    {product?.status !== "active"
+                      ? "Ended"
+                      : getTimeLeft(`${product?.timeLeft}`)}
                   </div>
                 </div>
               </CardContent>
@@ -85,7 +87,12 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
             )}
             {product?.status !== "active" &&
               (product?.bidWinnerId !== null ||
-                product?.bidWinnerId !== "") && <WinnerCard winnerName={product?.bidWinner?.name ?? ""} winnerEmail={product?.bidWinner?.email ?? ""} />}
+                product?.bidWinnerId !== "") && (
+                <WinnerCard
+                  winnerName={product?.bidWinner?.name ?? ""}
+                  winnerEmail={product?.bidWinner?.email ?? ""}
+                />
+              )}
             {product?.userId === session.id && (
               <div className="flex items-center gap-4">
                 {product?.status === "active" && (
