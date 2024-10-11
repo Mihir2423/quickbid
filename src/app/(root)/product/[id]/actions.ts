@@ -42,8 +42,13 @@ export const placeBidAction = authenticatedAction
     // check if the auction is closed
     const product = await prisma.products.findUnique({
       where: { id: input.productId },
-      select: { status: true },
+      select: { status: true, timeLeft: true },
     });
+
+    // check if the last date has passed
+    if (!product?.timeLeft || (product?.timeLeft < new Date())) {
+      throw new Error("The auction has ended.");
+    }
     if (product?.status === "closed") {
       throw new Error("The auction is closed.");
     }
