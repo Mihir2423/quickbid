@@ -8,7 +8,7 @@ import { Sidebar } from "./sidebar";
 
 export const Navbar = () => {
   return (
-    <nav className="top-0 left-0 fixed flex justify-between items-center backdrop-blur-md px-6 pt-6 w-full">
+    <nav className="top-0 left-0 z-[3] fixed flex justify-between items-center backdrop-blur-md px-6 pt-6 w-full">
       <Image src="/logo.png" alt="logo" width={40} height={40} />
       <div className="flex items-center gap-2">
         <Button className="flex justify-center items-center gap-2 w-fit transition-all duration-300 ease-in-out">

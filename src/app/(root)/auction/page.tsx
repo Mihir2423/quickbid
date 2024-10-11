@@ -22,7 +22,7 @@ const AuctionPage = async () => {
           <CreateAuctionModal />
         </PageHeader>
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="place-content-center grid grid-cols-2 mb-6 p-4 w-fit">
+          <TabsList className="place-content-center grid grid-cols-2 mb-6 ml-4 p-4 w-fit">
             <TabsTrigger value="all">All Auctions</TabsTrigger>
             <TabsTrigger value="my">My Auctions</TabsTrigger>
           </TabsList>
