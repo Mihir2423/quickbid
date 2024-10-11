@@ -14,7 +14,7 @@ export default function Home() {
       </nav>
       <div className="flex flex-col justify-center items-center gap-2 w-full h-screen">
         <h1 className="font-bold text-5xl text-black">QuickBid</h1>
-        <p className="font-normal text-gray-500 text-lg">
+        <p className="font-normal text-center text-gray-500 text-lg">
           A fast, intuitive platform where users can bid, win, and save on top
           products and services in real-time.
         </p>
