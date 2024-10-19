@@ -1,4 +1,5 @@
 import { ComponentWrapper } from "@/components/component-wrapper";
+import { ErrorImage } from "@/components/error-image";
 import { BreadCrumb } from "@/components/globals/breadcrumb";
 import { PageHeader } from "@/components/globals/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,13 +7,12 @@ import { assertAuthenticated } from "@/lib/session";
 import { getTimeLeft } from "@/lib/utils";
 import { getProductDetailUseCase } from "@/use-cases/auctions";
 import { Clock } from "lucide-react";
-import Image from "next/image";
+import { WinnerCard } from "./_components/auction-winner";
 import { BiddingForm } from "./_components/bid-form";
 import { BiddingSection } from "./_components/bidding";
 import { CloseAuction } from "./_components/close";
-import { DeleteAuction } from "./_components/delete";
 import { CurrentBid } from "./_components/current-bid";
-import { WinnerCard } from "./_components/auction-winner";
+import { DeleteAuction } from "./_components/delete";
 const BiddingPage = async ({ params }: { params: { id: string } }) => {
   const session = await assertAuthenticated();
   const product: Product | null = await getProductDetailUseCase(
@@ -37,8 +37,8 @@ const BiddingPage = async ({ params }: { params: { id: string } }) => {
                 <CardTitle>{product?.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <Image
-                  src={product?.image || ""}
+                <ErrorImage
+                  src={product?.image || "/images/error-image.avif"}
                   alt="Vintage Phone"
                   width={500}
                   height={256}
