@@ -53,3 +53,15 @@ export const getProductDataById = async (id: string) => {
   });
   return res;
 };
+
+export const getWinningAuctions = async (userId: string) => {
+  const res = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      wonProducts: true,
+    },
+  });
+  return res?.wonProducts || [];
+};

@@ -1,4 +1,4 @@
-import { getAllAuctions, getMyAuctions, getProductDataById } from "@/data-access/auctions";
+import { getAllAuctions, getMyAuctions, getProductDataById, getWinningAuctions } from "@/data-access/auctions";
 import { User } from "next-auth";
 import "server-only";
 
@@ -27,3 +27,11 @@ export const getProductDetailUseCase = async (session: User, id: string) => {
   
   return res;
 };
+
+export const getWinningAuctionsUseCase = async (session: User | undefined) => {
+  if (!session || !session.id) {
+    return null;
+  }
+  const res = await getWinningAuctions(session.id);
+  return res;
+}

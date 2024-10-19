@@ -6,6 +6,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   ChevronLeft,
   ChevronRight,
+  Crown,
   Hammer,
   LayoutDashboard,
   LogOut,
@@ -68,6 +69,17 @@ export const Sidebar = () => {
               {!isCollapsed && <span>Auction</span>}
             </Link>
           </li>
+          <li>
+            <Link
+              href="/wins"
+              className={`flex items-center p-2 rounded-lg hover:bg-accent ${
+                isCollapsed ? "justify-center" : "space-x-3"
+              }`}
+            >
+              <Crown size={20} />
+              {!isCollapsed && <span>Winnings</span>}
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className="p-4 border-t">
@@ -75,7 +87,10 @@ export const Sidebar = () => {
           className={`flex items-center ${isCollapsed ? "justify-center" : "space-x-3"}`}
         >
           <Avatar>
-            <AvatarImage src={session?.data?.user?.image ?? "/avatar.png"} alt="User" />
+            <AvatarImage
+              src={session?.data?.user?.image ?? "/avatar.png"}
+              alt="User"
+            />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           {!isCollapsed && (
