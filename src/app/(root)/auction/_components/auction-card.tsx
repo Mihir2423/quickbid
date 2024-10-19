@@ -1,3 +1,4 @@
+import { ErrorImage } from "@/components/error-image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { getTimeLeft } from "@/lib/utils";
 import { Clock, CreditCard } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 export const AuctionCard = ({ auction }: { auction: Auction }) => {
@@ -16,7 +16,7 @@ export const AuctionCard = ({ auction }: { auction: Auction }) => {
     <Card className="flex flex-col justify-between h-full overflow-hidden">
       <div>
         <CardHeader className="p-0">
-          <Image
+          <ErrorImage
             src={auction.image}
             alt={auction.name}
             width={400}
