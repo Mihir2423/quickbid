@@ -52,6 +52,17 @@ export const placeBidAction = authenticatedAction
     if (product?.status === "closed") {
       throw new Error("The auction is closed.");
     }
+
+    // check if the current user is the highest bidder
+    const highestBid = await prisma.bid.findFirst({
+      where: { productId: input.productId },
+      orderBy: { amount: "desc" },
+      select: { userId: true },
+    });
+
+    if (highestBid?.userId === input.userId) {
+      throw new Error("You are already the highest bidder.");
+    }
     await prisma.$transaction(async (prisma) => {
       await prisma.bid.create({
         data: {

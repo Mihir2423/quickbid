@@ -33,14 +33,10 @@ export const BiddingForm = ({
   productId,
   userId,
   productUserId,
-  bids: initialBids,
   productName,
 }: Props) => {
   const [customBid, setCustomBid] = useState<number | null>(null);
   const { currentBid: storeBid, setCurrentBid } = useStore();
-  const [highestBidderId, setHighestBidderId] = useState<string | undefined>(
-   initialBids?.[0]?.userId
-  );
 
   useEffect(() => {
     const channel = supabase
@@ -77,7 +73,6 @@ export const BiddingForm = ({
               };
               
               setCurrentBid(newBid.amount.toString());
-              setHighestBidderId(newBid.userId);
             }
           }
         }
@@ -112,10 +107,6 @@ export const BiddingForm = ({
     const currentHighestBid = Number(storeBid || initialCurrentBid);
     if (amount <= currentHighestBid) {
       toast.error("Invalid Bid Amount");
-      return;
-    }
-    if (highestBidderId === userId) {
-      toast.error("You are already the highest bidder");
       return;
     }
     if (
