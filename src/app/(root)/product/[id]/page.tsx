@@ -15,11 +15,13 @@ import { CurrentBid } from "./_components/current-bid";
 import { DeleteAuction } from "./_components/delete";
 const BiddingPage = async ({ params }: { params: { id: string } }) => {
   const session = await assertAuthenticated();
+  if (!session) {
+    return <Card>Not authenticated</Card>;
+  }
   const product: Product | null = await getProductDetailUseCase(
     session,
     params.id
   );
-  console.log(product?.bidWinner, "PRODUCTS");
   return (
     <ComponentWrapper>
       <PageHeader title="Auctions"></PageHeader>
