@@ -4,13 +4,45 @@ import { auth } from "@/auth";
 import prisma from "@/lib/db";
 import { authenticatedAction } from "@/lib/safe-action";
 import { AuthenticationError } from "@/lib/utils";
-import { z } from "zod";
 import { formSchema } from "@/schema/bid-schema";
-import { revalidatePath } from "next/cache";
 import { Knock } from "@knocklabs/node";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const knock = new Knock(process.env.KNOCK_SECRET_KEY);
+
+// Rate limiter implementation
+const RATE_LIMIT_WINDOW = 10000; // 10 seconds in milliseconds
+const RATE_LIMIT_REQUESTS = 1;
+
+interface RateLimitEntry {
+  timestamps: number[];
+}
+
+const rateLimiter = new Map<string, RateLimitEntry>();
+
+function isRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const userEntry = rateLimiter.get(userId);
+
+  if (!userEntry) {
+    rateLimiter.set(userId, { timestamps: [now] });
+    return false;
+  }
+
+  // Remove expired timestamps
+  userEntry.timestamps = userEntry.timestamps.filter(
+    (timestamp) => now - timestamp < RATE_LIMIT_WINDOW
+  );
+
+  if (userEntry.timestamps.length >= RATE_LIMIT_REQUESTS) {
+    return true;
+  }
+
+  userEntry.timestamps.push(now);
+  return false;
+}
 
 export const placeBidAction = authenticatedAction
   .createServerAction()
@@ -21,6 +53,12 @@ export const placeBidAction = authenticatedAction
     if (!session || !session.user || !session.user.id) {
       throw new AuthenticationError();
     }
+    if (isRateLimited(session.user.id)) {
+      throw new Error(
+        "Rate limit exceeded. Please wait before placing another bid."
+      );
+    }
+
     if (session.user.id === input.productUserId) {
       throw new Error("You cannot bid on your own product");
     }
@@ -37,7 +75,7 @@ export const placeBidAction = authenticatedAction
       where: { id: input.productId },
     });
     if (!productExists) {
-     throw new Error("Product not found.");
+      throw new Error("Product not found.");
     }
     // check if the auction is closed
     const product = await prisma.products.findUnique({
@@ -46,7 +84,7 @@ export const placeBidAction = authenticatedAction
     });
 
     // check if the last date has passed
-    if (!product?.timeLeft || (product?.timeLeft < new Date())) {
+    if (!product?.timeLeft || product?.timeLeft < new Date()) {
       throw new Error("The auction has ended.");
     }
     if (product?.status === "closed") {
@@ -74,7 +112,7 @@ export const placeBidAction = authenticatedAction
       await prisma.products.update({
         where: { id: input.productId },
         data: { currentBid: input.amount },
-      })
+      });
     });
 
     revalidatePath(`/auction/${input.productId}`);
