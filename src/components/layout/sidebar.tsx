@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
+ Bot,
   ChevronLeft,
   ChevronRight,
   Crown,
@@ -78,6 +79,17 @@ export const Sidebar = () => {
             >
               <Crown size={20} />
               {!isCollapsed && <span>Winnings</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/chat"
+              className={`flex items-center p-2 rounded-lg hover:bg-accent ${
+                isCollapsed ? "justify-center" : "space-x-3"
+              }`}
+            >
+              <Bot size={20} />
+              {!isCollapsed && <span>Chat Bot</span>}
             </Link>
           </li>
         </ul>
