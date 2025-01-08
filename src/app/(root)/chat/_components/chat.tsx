@@ -9,13 +9,14 @@ type Props = {
 };
 
 export const Chat = ({ products }: Props) => {
-  const [messages, setMessages] = useState<
-    Array<{ role: "user" | "assistant"; content: string }>
-  >([]);
+  const [messages, setMessages] = useState([
+    { role: "assistant", content: "Hello! How can I help you today?" },
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  console.log(products);
   const handleSendMessage = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -43,9 +44,16 @@ export const Chat = ({ products }: Props) => {
           content: "Sorry, I encountered an error. Please try again.",
         },
       ]);
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
-    <ChatInterface messages={messages} onSendMessage={handleSendMessage} />
+    <ChatInterface
+      messages={messages}
+      onSendMessage={handleSendMessage}
+      isLoading={isLoading}
+    />
   );
 };
