@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="en">
      <Script
         defer
-        data-domain="mihiranalytics"
+        data-domain="analytics-code.vercel.app"
         src="https://analytics-code.vercel.app/tracking-script.js"
       />
       <body className={`${inter.className} antialiased bg-white`}>
