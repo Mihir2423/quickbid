@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Provider from "./_provider";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+     <Script
+        defer
+        data-domain="mihiranalytics"
+        src="https://analytics-code.vercel.app/tracking-script.js"
+      />
       <body className={`${inter.className} antialiased bg-white`}>
         <Provider>
           {children}
